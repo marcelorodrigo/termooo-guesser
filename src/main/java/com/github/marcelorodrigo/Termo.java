@@ -71,9 +71,9 @@ public class Termo {
                 possibleWords = new FilterIncluded().filter(possibleWords, includeList);
             }
 
-            final var found = arguments.getString("found");
-            if (nonNull(found)) {
-                final var foundList = parseParams(includeParams);
+            final var foundParams = arguments.getString("found");
+            if (nonNull(foundParams)) {
+                final var foundList = parseParams(foundParams);
                 System.out.print("Looking for words with exactly positions: ");
                 foundList.forEach(System.out::print);
                 System.out.println();
