@@ -10,7 +10,7 @@ class WordCombinationTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"a1", "c5", "d3", "e2", "f4"})
-    void otimisticTest(final String data) {
+    void optimisticTest(final String data) {
         final var result = new WordCombination(data);
         assertEquals(data.substring(0, 1), result.getCharacter());
         assertEquals(Long.valueOf(data.substring(1, 2)), result.getPosition());
