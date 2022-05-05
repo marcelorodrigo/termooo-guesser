@@ -17,10 +17,11 @@ public class Termo {
     private static final Logger LOGGER = Logger.getAnonymousLogger();
 
     static {
-        try (final var stream = Termo.class.getClassLoader().getResourceAsStream("logging.properties");) {
+        try (var stream = Termo.class.getClassLoader().getResourceAsStream("logging.properties");) {
             LogManager.getLogManager().readConfiguration(stream);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.setProperty("java.util.logging.ConsoleHandler.formatter", "java.util.logging.SimpleFormatter");
+            System.setProperty("java.util.logging.SimpleFormatter.format", "%5$s %n");
         }
     }
 
