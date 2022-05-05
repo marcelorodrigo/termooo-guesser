@@ -13,9 +13,6 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <sonar.projectKey>marcelorodrigo_termooo-guesser</sonar.projectKey>
-        <sonar.organization>marcelorodrigo</sonar.organization>
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <dependencies>
