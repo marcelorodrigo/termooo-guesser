@@ -27,7 +27,7 @@ public class Termo {
                         For more than one combination, you can split them by comma.
                         Example: a1,r2
                         """)
-                .epilog("And maybe you can now guess the term.ooogit in!");
+                .epilog("And maybe you can now guess the term.ooo!");
         argumentParser.addArgument("-exclude")
                 .metavar("combinations")
                 .help("Characters to exclude")
@@ -46,14 +46,12 @@ public class Termo {
 
         try {
             final var arguments = argumentParser.parseArgs(args);
-            final var words = Files.readAllLines(Paths.get("src/main/resources/words.txt"));
-            List<String> possibleWords = Collections.emptyList();
-
+            var possibleWords = Files.readAllLines(Paths.get("src/main/resources/words.txt"));
 
             final var toExclude = arguments.getString("exclude");
             if (toExclude != null) {
                 System.out.println("Removing words with letters: " + toExclude);
-                possibleWords = filterExcluded(words, toExclude);
+                possibleWords = filterExcluded(possibleWords, toExclude);
             }
 
             final var toInclude = arguments.<WordCombinationList>get("include");
