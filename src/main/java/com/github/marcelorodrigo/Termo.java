@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
@@ -67,15 +66,14 @@ public class Termo {
             final var toExclude = arguments.getString("exclude");
             if (nonNull(toExclude)) {
                 LOGGER.info("Removing words with letters: " + toExclude);
-                possibleWords = filterExcluded(possibleWords, toExclude);
+                possibleWords = new FilterExcluded().filter(possibleWords, toExclude);
             }
 
             final var includeParams = arguments.getString("include");
             if (nonNull(includeParams)) {
                 final var includeList = parseParams(includeParams);
                 LOGGER.info("Looking for words that doesn't contains words in positions: " + includeList);
-                System.out.println();
-                possibleWords = filterInclude(possibleWords, includeList);
+                possibleWords = new FilterIncluded().filter(possibleWords, includeList);
             }
 
             final var found = arguments.getString("found");
@@ -107,27 +105,12 @@ public class Termo {
                 .toList();
     }
 
-    private static List<String> filterExcluded(final List<String> words, final String toExcludePattern) {
-        final var regex = "((?!" + toExcludePattern.replace(",", "|") + ").)*$";
-        return words.stream()
-                .filter(Pattern.compile(regex).asMatchPredicate())
-                .toList();
-    }
-
     private static List<String> filterExact(final List<String> words, final List<WordCombination> exact) {
         final var filtered = new AtomicReference<>(words);
         exact.forEach(wordCombination -> filtered.set(filtered.get().stream()
-                .filter(word -> word.substring(wordCombination.position - 1, wordCombination.position).equals(wordCombination.character))
+                .filter(word -> word.substring(wordCombination.getPosition() - 1, wordCombination.getPosition()).equals(wordCombination.getCharacter()))
                 .toList()));
         return filtered.get();
     }
 
-    private static List<String> filterInclude(final List<String> words, final List<WordCombination> include) {
-        var filtered = new AtomicReference<>(words);
-        include.forEach(wordCombination -> filtered.set(filtered.get().stream()
-                .filter(word -> word.contains(wordCombination.character) &&
-                        !word.substring(wordCombination.position - 1, wordCombination.position).equals(wordCombination.character))
-                .toList()));
-        return filtered.get();
-    }
 }

@@ -3,8 +3,8 @@ package com.github.marcelorodrigo;
 import java.util.regex.Pattern;
 
 public class WordCombination {
-    final int position;
-    final String character;
+    private final int position;
+    private final String character;
 
     public WordCombination(final String data) {
         validate(data);
