@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -48,10 +47,6 @@ public class Termo {
                 .metavar("combinations")
                 .help("Characters to include, but not in the right position")
                 .required(false);
-        argumentParser.addArgument("-include2")
-                .metavar("combinations")
-                .help("Characters to include, but not in the right position")
-                .required(false);
         argumentParser.addArgument("-found")
                 .metavar("combinations")
                 .help("Characters found in the right position")
@@ -82,7 +77,7 @@ public class Termo {
                 System.out.print("Looking for words with exactly positions: ");
                 foundList.forEach(System.out::print);
                 System.out.println();
-                possibleWords = filterExact(possibleWords, foundList);
+                possibleWords = new FilterExact().filter(possibleWords, foundList);
             }
 
             if (possibleWords.isEmpty()) {
@@ -103,14 +98,6 @@ public class Termo {
         return Stream.of(params.split(","))
                 .map(WordCombination::new)
                 .toList();
-    }
-
-    private static List<String> filterExact(final List<String> words, final List<WordCombination> exact) {
-        final var filtered = new AtomicReference<>(words);
-        exact.forEach(wordCombination -> filtered.set(filtered.get().stream()
-                .filter(word -> word.substring(wordCombination.getPosition() - 1, wordCombination.getPosition()).equals(wordCombination.getCharacter()))
-                .toList()));
-        return filtered.get();
     }
 
 }
