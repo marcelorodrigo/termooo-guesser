@@ -7,11 +7,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
+import static java.util.Objects.nonNull;
 
 public class Termo {
     private static final Logger LOGGER = Logger.getAnonymousLogger();
@@ -46,55 +48,63 @@ public class Termo {
         argumentParser.addArgument("-include")
                 .metavar("combinations")
                 .help("Characters to include, but not in the right position")
-                .type(WordCombinationList.class)
+                .required(false);
+        argumentParser.addArgument("-include2")
+                .metavar("combinations")
+                .help("Characters to include, but not in the right position")
                 .required(false);
         argumentParser.addArgument("-found")
                 .metavar("combinations")
                 .help("Characters found in the right position")
-                .type(WordCombinationList.class)
                 .required(false);
 
 
         try {
-//            LOGGER.info("Starting up ...");
             LOGGER.info("Starting up ...");
             final var arguments = argumentParser.parseArgs(args);
             var possibleWords = Files.readAllLines(Paths.get("src/main/resources/words.txt"));
 
             final var toExclude = arguments.getString("exclude");
-            if (toExclude != null) {
-                System.out.println("Removing words with letters: " + toExclude);
+            if (nonNull(toExclude)) {
+                LOGGER.info("Removing words with letters: " + toExclude);
                 possibleWords = filterExcluded(possibleWords, toExclude);
             }
 
-            final var toInclude = arguments.<WordCombinationList>get("include");
-            if (Objects.nonNull(toInclude)) {
-                System.out.print("Looking for words that doesn't contains words in positions: ");
-                toInclude.getList().forEach(System.out::print);
+            final var includeParams = arguments.getString("include");
+            if (nonNull(includeParams)) {
+                final var includeList = parseParams(includeParams);
+                LOGGER.info("Looking for words that doesn't contains words in positions: " + includeList);
                 System.out.println();
-                possibleWords = filterInclude(possibleWords, toInclude);
+                possibleWords = filterInclude(possibleWords, includeList);
             }
 
-            final var found = arguments.<WordCombinationList>get("found");
-            if (Objects.nonNull(found)) {
+            final var found = arguments.getString("found");
+            if (nonNull(found)) {
+                final var foundList = parseParams(includeParams);
                 System.out.print("Looking for words with exactly positions: ");
-                found.getList().forEach(System.out::print);
+                foundList.forEach(System.out::print);
                 System.out.println();
-                possibleWords = filterExact(possibleWords, found);
+                possibleWords = filterExact(possibleWords, foundList);
             }
 
             if (possibleWords.isEmpty()) {
                 argumentParser.printHelp();
             } else {
-                System.out.println("Possible words: " + possibleWords);
+                LOGGER.info("Possible words: " + possibleWords);
             }
-            System.out.println("Processing complete!");
+            LOGGER.info("Processing complete!");
         } catch (ArgumentParserException e) {
-            System.out.println(e.getMessage());
+            LOGGER.warning(e.getMessage());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            LOGGER.severe(e.getMessage());
         }
 
+    }
+
+    private static List<WordCombination> parseParams(final String params) {
+        return Stream.of(params.split(","))
+                .map(WordCombination::new)
+                .toList();
     }
 
     private static List<String> filterExcluded(final List<String> words, final String toExcludePattern) {
@@ -104,17 +114,17 @@ public class Termo {
                 .toList();
     }
 
-    private static List<String> filterExact(final List<String> words, final WordCombinationList exact) {
+    private static List<String> filterExact(final List<String> words, final List<WordCombination> exact) {
         final var filtered = new AtomicReference<>(words);
-        exact.getList().forEach(wordCombination -> filtered.set(filtered.get().stream()
+        exact.forEach(wordCombination -> filtered.set(filtered.get().stream()
                 .filter(word -> word.substring(wordCombination.position - 1, wordCombination.position).equals(wordCombination.character))
                 .toList()));
         return filtered.get();
     }
 
-    private static List<String> filterInclude(final List<String> words, final WordCombinationList include) {
+    private static List<String> filterInclude(final List<String> words, final List<WordCombination> include) {
         var filtered = new AtomicReference<>(words);
-        include.getList().forEach(wordCombination -> filtered.set(filtered.get().stream()
+        include.forEach(wordCombination -> filtered.set(filtered.get().stream()
                 .filter(word -> word.contains(wordCombination.character) &&
                         !word.substring(wordCombination.position - 1, wordCombination.position).equals(wordCombination.character))
                 .toList()));
