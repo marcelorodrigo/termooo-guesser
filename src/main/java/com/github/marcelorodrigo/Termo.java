@@ -9,9 +9,20 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class Termo {
+    private static final Logger LOGGER = Logger.getAnonymousLogger();
+
+    static {
+        try (final var stream = Termo.class.getClassLoader().getResourceAsStream("logging.properties");) {
+            LogManager.getLogManager().readConfiguration(stream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void main(String[] args) {
         final var argumentParser = ArgumentParsers.newFor("java -jar termo.jar")
@@ -44,6 +55,8 @@ public class Termo {
 
 
         try {
+//            LOGGER.info("Starting up ...");
+            LOGGER.info("Starting up ...");
             final var arguments = argumentParser.parseArgs(args);
             var possibleWords = Files.readAllLines(Paths.get("src/main/resources/words.txt"));
 
