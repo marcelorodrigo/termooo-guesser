@@ -1,0 +1,24 @@
+{
+  "name": "termooo-guesser",
+  "version": "1.0.0",
+  "description": "Nuxt SPA that guesses possible words for term.ooo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "nuxt": "^3.12.0",
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "@vue/test-utils": "^2.4.0",
+    "typescript": "^5.5.0",
+    "vitest": "^1.6.0"
+  }
+}
