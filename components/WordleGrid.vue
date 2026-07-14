@@ -29,7 +29,11 @@ function cellClass(cell: CellData, row: number, col: number): string {
         v-for="(cell, colIdx) in row"
         :key="colIdx"
         :class="cellClass(cell, rowIdx, colIdx)"
+        role="button"
+        tabindex="0"
         @click="emit('cycleCell', rowIdx, colIdx)"
+        @keydown.enter="emit('cycleCell', rowIdx, colIdx)"
+        @keydown.space.prevent="emit('cycleCell', rowIdx, colIdx)"
       >
         {{ cell.letter.toUpperCase() }}
       </div>

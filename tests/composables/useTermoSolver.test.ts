@@ -151,5 +151,30 @@ describe('useTermoSolver', () => {
       const result = solver.solve(guesses);
       expect(result.map(r => r.word)).toEqual(['areia', 'amora']);
     });
+
+    it('does not accumulate a confirmed letter count across guesses', () => {
+      const solver = useTermoSolver(['amplo']);
+      const guesses = [
+        makeGuess([
+          makeCell('a', 'green'),
+          makeCell('x', 'gray'),
+          makeCell('y', 'gray'),
+          makeCell('z', 'gray'),
+          makeCell('q', 'gray'),
+        ]),
+        makeGuess([
+          makeCell('a', 'green'),
+          makeCell('b', 'gray'),
+          makeCell('c', 'gray'),
+          makeCell('d', 'gray'),
+          makeCell('e', 'gray'),
+        ]),
+      ];
+
+      const state = solver.computeState(guesses);
+
+      expect(state.letterInfo.get('a')?.minCount).toBe(1);
+      expect(solver.solve(guesses).map(r => r.word)).toEqual(['amplo']);
+    });
   });
 });

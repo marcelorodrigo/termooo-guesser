@@ -16,6 +16,8 @@ const {
 } = useGame();
 
 function handleKeydown(e: KeyboardEvent) {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+
   if (e.key === 'Enter') {
     submitRow();
   } else if (e.key === 'Backspace') {

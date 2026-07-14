@@ -31,13 +31,12 @@ export function useTermoSolver(wordList: string[]) {
             });
           }
           const info = letterInfo.get(letter)!;
+          info.minCount = Math.max(info.minCount, greenEntries.length + yellowEntries.length);
           for (const entry of greenEntries) {
             info.exactPositions.add(entry.pos);
-            info.minCount++;
           }
           for (const entry of yellowEntries) {
             info.excludedPositions.add(entry.pos);
-            info.minCount++;
           }
           for (const entry of grayEntries) {
             info.excludedPositions.add(entry.pos);
