@@ -11,15 +11,25 @@ Nuxt 3 SPA that helps solve [term.ooo](https://term.ooo) puzzles with a Wordle-l
 
 ## Development
 
+Install Node.js 24, then enable pnpm through Corepack. The project pins the
+supported pnpm version in `package.json`.
+
 ```bash
-npm install
-npm run dev
+npm install --global corepack@latest
+corepack enable pnpm
+```
+
+Install dependencies and start the development server:
+
+```bash
+pnpm install
+pnpm dev
 ```
 
 ## Build
 
 ```bash
-npm run generate
+pnpm generate
 ```
 
 Output goes to `.output/public/`.
@@ -27,5 +37,6 @@ Output goes to `.output/public/`.
 ## Test
 
 ```bash
-npm test
+pnpm typecheck
+pnpm test
 ```

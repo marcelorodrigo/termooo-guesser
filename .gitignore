@@ -1,7 +1,8 @@
 node_modules/
+.pnpm-store/
 .nuxt/
 .output/
-dist/
+/dist
 .data/
 *.log
 .DS_Store

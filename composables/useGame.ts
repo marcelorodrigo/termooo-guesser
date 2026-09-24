@@ -17,7 +17,9 @@ function createEmptyCell(): CellData {
 }
 
 export function useGame() {
-  const wordList = wordsRaw.trim().split('\n').filter(w => w.length === 5);
+  const wordList = [...new Set(
+    wordsRaw.trim().split(/\r?\n/).filter(word => /^[a-z]{5}$/.test(word))
+  )];
   const solver = useTermoSolver(wordList);
 
   const grid = ref<CellData[][]>(createEmptyGrid());
