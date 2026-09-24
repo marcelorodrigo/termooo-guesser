@@ -604,7 +604,6 @@ janta
 mover
 vidro
 votar
-pilha
 brasa
 areal
 jarro
