@@ -11,7 +11,7 @@ Nuxt 3 SPA that helps solve [term.ooo](https://term.ooo) puzzles with a Wordle-l
 
 ## Development
 
-Install Node.js 24, then enable pnpm through Corepack. The project pins the
+Install Node.js 26, then enable pnpm through Corepack. The project pins the
 supported pnpm version in `package.json`.
 
 ```bash

@@ -4,10 +4,10 @@
   "description": "Nuxt SPA that guesses possible words for term.ooo",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@11.10.0",
+  "packageManager": "pnpm@12.6.0",
   "engines": {
-    "node": ">=24 <25",
-    "pnpm": "11.10.0"
+    "node": ">=26 <27",
+    "pnpm": "12.6.0"
   },
   "scripts": {
     "build": "nuxt build",
@@ -23,7 +23,7 @@
     "vue": "^3.4.0"
   },
   "devDependencies": {
-    "@types/node": "^24.13.3",
+    "@types/node": "^26.6.2",
     "@vue/test-utils": "^2.4.0",
     "typescript": "^5.5.0",
     "vitest": "^1.6.0",
