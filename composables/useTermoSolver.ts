@@ -20,31 +20,35 @@ export function useTermoSolver(wordList: string[]) {
         const greenEntries = entries.filter(e => e.cell.state === 'green');
         const yellowEntries = entries.filter(e => e.cell.state === 'yellow');
         const grayEntries = entries.filter(e => e.cell.state === 'gray');
+        const confirmedCount = greenEntries.length + yellowEntries.length;
 
-        if (greenEntries.length + yellowEntries.length > 0) {
-          fullyExcluded.delete(letter);
-          if (!letterInfo.has(letter)) {
-            letterInfo.set(letter, {
-              minCount: 0,
-              exactPositions: new Set<number>(),
-              excludedPositions: new Set<number>(),
-            });
-          }
-          const info = letterInfo.get(letter)!;
-          info.minCount = Math.max(info.minCount, greenEntries.length + yellowEntries.length);
-          for (const entry of greenEntries) {
-            info.exactPositions.add(entry.pos);
-          }
-          for (const entry of yellowEntries) {
-            info.excludedPositions.add(entry.pos);
-          }
-          for (const entry of grayEntries) {
-            info.excludedPositions.add(entry.pos);
-          }
+        if (!letterInfo.has(letter)) {
+          letterInfo.set(letter, {
+            minCount: 0,
+            maxCount: null,
+            exactPositions: new Set<number>(),
+            excludedPositions: new Set<number>(),
+          });
+        }
+
+        const info = letterInfo.get(letter)!;
+        info.minCount = Math.max(info.minCount, confirmedCount);
+
+        if (grayEntries.length > 0) {
+          info.maxCount = Math.min(info.maxCount ?? Infinity, confirmedCount);
+        }
+
+        for (const entry of greenEntries) {
+          info.exactPositions.add(entry.pos);
+        }
+        for (const entry of [...yellowEntries, ...grayEntries]) {
+          info.excludedPositions.add(entry.pos);
+        }
+
+        if (info.maxCount === 0) {
+          fullyExcluded.add(letter);
         } else {
-          if (!letterInfo.has(letter) || letterInfo.get(letter)!.minCount === 0) {
-            fullyExcluded.add(letter);
-          }
+          fullyExcluded.delete(letter);
         }
       }
     }
@@ -61,6 +65,7 @@ export function useTermoSolver(wordList: string[]) {
       for (const [letter, info] of state.letterInfo) {
         const count = word.split('').filter(c => c === letter).length;
         if (count < info.minCount) return false;
+        if (info.maxCount !== null && count > info.maxCount) return false;
 
         for (const pos of info.exactPositions) {
           if (word[pos] !== letter) return false;

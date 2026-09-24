@@ -11,6 +11,7 @@ export interface Guess {
 
 export interface LetterInfo {
   minCount: number;
+  maxCount: number | null;
   exactPositions: Set<number>;
   excludedPositions: Set<number>;
 }

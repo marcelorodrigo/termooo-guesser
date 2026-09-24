@@ -83,22 +83,21 @@ describe('useTermoSolver', () => {
     });
 
     it('handles gray duplicate when another instance is green', () => {
-      const wordList = ['areia', 'porta', 'termo'];
+      const wordList = ['amplo', 'abaco', 'porta'];
       const solver = useTermoSolver(wordList);
       const guesses = [
         makeGuess([
           makeCell('a', 'green'),
-          makeCell('r', 'gray'),
-          makeCell('e', 'gray'),
-          makeCell('i', 'gray'),
-          makeCell('a', 'green'),
+          makeCell('a', 'gray'),
+          makeCell('x', 'gray'),
+          makeCell('y', 'gray'),
+          makeCell('z', 'gray'),
         ]),
       ];
       const state = solver.computeState(guesses);
-      expect(state.letterInfo.get('a')?.minCount).toBe(2);
-      expect(state.fullyExcluded.has('r')).toBe(true);
-      expect(state.fullyExcluded.has('e')).toBe(true);
-      expect(state.fullyExcluded.has('i')).toBe(true);
+      expect(state.letterInfo.get('a')?.minCount).toBe(1);
+      expect(state.letterInfo.get('a')?.maxCount).toBe(1);
+      expect(solver.solve(guesses).map(r => r.word)).toEqual(['amplo']);
     });
 
     it('handles yellow duplicate correctly', () => {
@@ -114,7 +113,56 @@ describe('useTermoSolver', () => {
       ];
       const state = solver.computeState(guesses);
       expect(state.letterInfo.get('a')?.minCount).toBe(2);
+      expect(state.letterInfo.get('a')?.maxCount).toBeNull();
       expect(state.letterInfo.get('a')?.excludedPositions).toEqual(new Set([0, 4]));
+    });
+
+    it('uses the strictest letter count across guesses', () => {
+      const solver = useTermoSolver(['amplo', 'abaco', 'acima']);
+      const guesses = [
+        makeGuess([
+          makeCell('x', 'gray'),
+          makeCell('y', 'gray'),
+          makeCell('z', 'gray'),
+          makeCell('q', 'gray'),
+          makeCell('a', 'yellow'),
+        ]),
+        makeGuess([
+          makeCell('a', 'green'),
+          makeCell('a', 'gray'),
+          makeCell('x', 'gray'),
+          makeCell('y', 'gray'),
+          makeCell('z', 'gray'),
+        ]),
+      ];
+
+      const state = solver.computeState(guesses);
+
+      expect(state.letterInfo.get('a')?.minCount).toBe(1);
+      expect(state.letterInfo.get('a')?.maxCount).toBe(1);
+      expect(solver.solve(guesses).map(r => r.word)).toEqual(['amplo']);
+    });
+
+    it('returns no candidates for contradictory letter counts', () => {
+      const solver = useTermoSolver(['amplo', 'porta']);
+      const guesses = [
+        makeGuess([
+          makeCell('a', 'gray'),
+          makeCell('x', 'gray'),
+          makeCell('y', 'gray'),
+          makeCell('z', 'gray'),
+          makeCell('q', 'gray'),
+        ]),
+        makeGuess([
+          makeCell('a', 'green'),
+          makeCell('b', 'gray'),
+          makeCell('c', 'gray'),
+          makeCell('d', 'gray'),
+          makeCell('e', 'gray'),
+        ]),
+      ];
+
+      expect(solver.solve(guesses)).toEqual([]);
     });
   });
 
