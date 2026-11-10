@@ -7,8 +7,7 @@ export function useTermoSolver(wordList: string[]) {
 
     for (const guess of guesses) {
       const cellsByLetter = new Map<string, { cell: CellData; pos: number }[]>();
-      for (let i = 0; i < guess.cells.length; i++) {
-        const cell = guess.cells[i];
+      for (const [i, cell] of guess.cells.entries()) {
         if (cell.letter === '' || cell.state === 'empty') continue;
         if (!cellsByLetter.has(cell.letter)) {
           cellsByLetter.set(cell.letter, []);

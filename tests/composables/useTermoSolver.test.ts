@@ -172,8 +172,8 @@ describe('useTermoSolver', () => {
       const candidates = ['abcde', 'aabbb', 'xyzab'];
       const state = solver.computeState([]);
       const ranked = solver.rankCandidates(candidates, state);
-      expect(ranked[0].word).toBe('abcde');
-      expect(ranked[ranked.length - 1].word).toBe('aabbb');
+      expect(ranked[0]?.word).toBe('abcde');
+      expect(ranked.at(-1)?.word).toBe('aabbb');
     });
   });
 
