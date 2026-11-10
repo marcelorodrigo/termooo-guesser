@@ -16,7 +16,6 @@ defineProps<{
       <li v-for="(c, i) in candidates" :key="c.word" class="candidate">
         <span class="rank">{{ i + 1 }}.</span>
         <span class="word">{{ c.word }}</span>
-        <span class="score">{{ c.score }}</span>
       </li>
     </ul>
   </div>
@@ -66,14 +65,5 @@ ul {
   font-size: 1.1rem;
   color: #d7dadc;
   text-transform: uppercase;
-}
-
-.score {
-  margin-left: auto;
-  background-color: #3a3a3c;
-  color: #d7dadc;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 0.85rem;
 }
 </style>
