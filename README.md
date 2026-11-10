@@ -1,6 +1,6 @@
 # termooo-guesser
 
-Nuxt 3 SPA that helps solve [term.ooo](https://term.ooo) puzzles with a Wordle-like interface.
+Nuxt 4 SPA that helps solve [term.ooo](https://term.ooo) puzzles with a Wordle-like interface.
 
 ## Features
 

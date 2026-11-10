@@ -32,12 +32,18 @@ export function useGame() {
 
   const gameOver = computed(() => currentRow.value >= MAX_ROWS);
 
+  function currentCell(): CellData | undefined {
+    return grid.value[currentRow.value]?.[currentCol.value];
+  }
+
   function typeLetter(letter: string) {
     if (gameOver.value) return;
     if (!/^[a-zA-Z]$/.test(letter)) return;
     letter = letter.toLowerCase();
 
-    const cell = grid.value[currentRow.value][currentCol.value];
+    const cell = currentCell();
+    if (!cell) return;
+
     cell.letter = letter;
     if (cell.state === 'empty') {
       cell.state = 'green';
@@ -50,13 +56,16 @@ export function useGame() {
   function deleteLetter() {
     if (gameOver.value) return;
 
-    const cell = grid.value[currentRow.value][currentCol.value];
+    const cell = currentCell();
+    if (!cell) return;
+
     if (cell.letter !== '') {
       cell.letter = '';
       cell.state = 'empty';
     } else if (currentCol.value > 0) {
       currentCol.value--;
-      const prevCell = grid.value[currentRow.value][currentCol.value];
+      const prevCell = currentCell();
+      if (!prevCell) return;
       prevCell.letter = '';
       prevCell.state = 'empty';
     }
@@ -65,18 +74,21 @@ export function useGame() {
   function cycleCell(row: number, col: number) {
     if (gameOver.value) return;
     if (row !== currentRow.value) return;
-    const cell = grid.value[row][col];
+    const cell = grid.value[row]?.[col];
+    if (!cell) return;
     if (cell.letter === '') return;
 
     const cycle: CellData['state'][] = ['green', 'yellow', 'gray', 'empty'];
     const idx = cycle.indexOf(cell.state);
-    cell.state = cycle[(idx + 1) % cycle.length];
+    cell.state = cycle[(idx + 1) % cycle.length] ?? 'empty';
   }
 
   function submitRow() {
     if (gameOver.value) return;
 
     const row = grid.value[currentRow.value];
+    if (!row) return;
+
     const allFilled = row.every(c => c.letter !== '' && c.state !== 'empty');
     if (!allFilled) return;
 
